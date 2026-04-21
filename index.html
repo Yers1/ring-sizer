@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="description" content="Ring Sizer — find your ring size online. Place your ring on screen and match the circle.">
+  <meta name="theme-color" content="#0c0a08">
+  <title>Ring Sizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+
+    <!-- ── HEADER ── -->
+    <header class="site-header">
+      <div class="header-ornament" aria-hidden="true">◈</div>
+      <h1 class="site-title">Ring Sizer</h1>
+      <p class="site-tagline">Find your perfect ring size</p>
+      <div class="header-ornament" aria-hidden="true">◈</div>
+    </header>
+
+    <!-- ── CALIBRATION NOTICE BAR ── -->
+    <div class="calib-bar" id="calibBar">
+      <span class="calib-bar-text">📐 Calibrate your screen with a credit card for best accuracy</span>
+      <button class="btn-link" id="openCalibBtn">Calibrate</button>
+    </div>
+
+    <!-- ── CALIBRATION MODAL ── -->
+    <div class="modal-overlay" id="modalOverlay" aria-hidden="true">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <button class="modal-close" id="closeModalBtn" aria-label="Close">✕</button>
+        <h2 class="modal-title" id="modalTitle">Screen Calibration</h2>
+        <p class="modal-desc">
+          Place a credit card against the rectangle and drag the
+          <strong>bottom edge</strong> until the height matches your card exactly.
+        </p>
+        <div class="calib-zone" id="calibZone">
+          <div class="calib-rect" id="calibRect">
+            <span class="calib-rect-label">Credit / Debit Card<br>(54 × 85.6 mm)</span>
+            <div class="calib-handle" id="calibHandle" title="Drag to resize">↕</div>
+          </div>
+        </div>
+        <p class="calib-feedback" id="calibFeedback">Height: —</p>
+        <div class="modal-actions">
+          <button class="btn-primary" id="saveCalibBtn">Save</button>
+          <button class="btn-ghost"   id="cancelCalibBtn">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── TABS ── -->
+    <nav class="tabs" role="tablist" aria-label="Measurement mode">
+      <button class="tab active" data-tab="ring"   role="tab" aria-selected="true">💍 By Ring</button>
+      <button class="tab"        data-tab="finger" role="tab" aria-selected="false">☝️ By Finger</button>
+    </nav>
+
+    <!-- ══════════════════════════════════════════════
+         PANEL: RING MODE
+    ══════════════════════════════════════════════ -->
+    <section class="panel active" id="panelRing" role="tabpanel">
+
+      <div class="instruction-card">
+        <div class="instr-icon">💍</div>
+        <p>Place your ring on the screen and adjust the slider until the circle matches the inner edge of your ring</p>
+      </div>
+
+      <!-- Ring Visual -->
+      <div class="ring-stage" id="ringStage">
+        <div class="crosshair ch-h" aria-hidden="true"></div>
+        <div class="crosshair ch-v" aria-hidden="true"></div>
+        <div class="ring-element"   id="ringElement"></div>
+        <div class="diam-indicator" id="diamIndicator" aria-hidden="true">
+          <div class="diam-line"></div>
+          <div class="diam-tick diam-tick--l"></div>
+          <div class="diam-tick diam-tick--r"></div>
+        </div>
+        <div class="stage-label" id="stageLabel">⌀ 17.0 mm</div>
+      </div>
+
+      <!-- Size Display -->
+      <div class="size-readout">
+        <div class="size-main-label" id="diamMmLabel">17.0 mm — inner diameter</div>
+        <div class="size-grid">
+          <div class="size-card">
+            <div class="size-card-region">Russia</div>
+            <div class="size-card-value" id="sizeRU">17</div>
+          </div>
+          <div class="size-card size-card--gold">
+            <div class="size-card-region">Europe / EU</div>
+            <div class="size-card-value" id="sizeEU">53</div>
+          </div>
+          <div class="size-card">
+            <div class="size-card-region">USA / US</div>
+            <div class="size-card-value" id="sizeUS">6½</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slider -->
+      <div class="slider-section">
+        <div class="slider-limits">
+          <span>14 mm</span>
+          <span>23 mm</span>
+        </div>
+        <input
+          type="range" class="ring-slider" id="ringSlider"
+          min="140" max="230" value="170" step="1"
+          aria-label="Inner ring diameter"
+        >
+        <p class="slider-hint">← Smaller · · · Larger →</p>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════
+         PANEL: FINGER MODE
+    ══════════════════════════════════════════════ -->
+    <section class="panel" id="panelFinger" role="tabpanel">
+
+      <div class="warning-card">
+        <span class="warning-icon">⚠️</span>
+        <div>
+          <strong>This method is approximate!</strong>
+          <p>The screen measures the contact area of your fingertip, not the circumference at
+             the base of your finger — where a ring actually sits. Results may be off by 1–3
+             sizes. Use only as a rough estimate.</p>
+        </div>
+      </div>
+
+      <div class="instruction-card">
+        <div class="instr-icon">☝️</div>
+        <p>Press your <strong>ring finger</strong> against the circle and hold for 2 seconds</p>
+      </div>
+
+      <!-- Touch Zone -->
+      <div class="finger-stage">
+        <div class="touch-zone" id="touchZone" role="button" aria-label="Touch area for finger measurement">
+          <div class="pulse-ring"></div>
+          <div class="pulse-ring pulse-ring--2"></div>
+          <p class="touch-prompt" id="touchPrompt">Touch<br>here</p>
+        </div>
+      </div>
+
+      <!-- No-touch device notice -->
+      <div class="no-touch-notice hidden" id="noTouchNotice">
+        📱 This feature requires a touchscreen device
+      </div>
+
+      <!-- Finger Result -->
+      <div class="finger-result hidden" id="fingerResult">
+        <div class="size-main-label" id="fingerDiamLabel">~ — mm</div>
+        <div class="size-grid">
+          <div class="size-card">
+            <div class="size-card-region">Russia</div>
+            <div class="size-card-value" id="fRU">—</div>
+          </div>
+          <div class="size-card">
+            <div class="size-card-region">Europe</div>
+            <div class="size-card-value" id="fEU">—</div>
+          </div>
+          <div class="size-card">
+            <div class="size-card-region">USA</div>
+            <div class="size-card-value" id="fUS">—</div>
+          </div>
+        </div>
+        <div class="finger-caveat">
+          ⚠️ Result is approximate. For an accurate size, use the "By Ring" mode.
+        </div>
+        <button class="btn-check" id="checkRingBtn">Verify with ring →</button>
+      </div>
+
+    </section>
+
+    <!-- ── SIZE REFERENCE TABLE ── -->
+    <section class="reference-section">
+      <div class="section-divider">
+        <div class="divider-rule"></div>
+        <span class="divider-label">Size Chart</span>
+        <div class="divider-rule"></div>
+      </div>
+      <p class="table-hint">Tap any row to set that size automatically</p>
+      <div class="table-scroll">
+        <table class="size-table" aria-label="Ring size chart">
+          <thead>
+            <tr>
+              <th scope="col">Diameter</th>
+              <th scope="col">RU</th>
+              <th scope="col">EU</th>
+              <th scope="col">US</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer class="site-footer">
+      <div class="footer-ornament" aria-hidden="true">— ◈ —</div>
+      <p>For absolute accuracy, visit a jewellery store</p>
+      <p class="footer-sub">Ring Sizer · Open Source</p>
+    </footer>
+
+  </div><!-- /.app -->
+  <script src="script.js"></script>
+</body>
+</html>
