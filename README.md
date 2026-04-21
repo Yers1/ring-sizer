@@ -3,7 +3,7 @@
 A browser-based ring size finder — no app, no install, works offline.  
 Place your ring on the screen and match the circle to find your size.
 
-**[→ Live Demo on GitHub Pages](https://YOUR_USERNAME.github.io/ring-sizer/)**
+
 
 ---
 
