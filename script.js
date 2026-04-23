@@ -324,8 +324,52 @@ checkRingBtn.addEventListener('click', () => {
 });
 
 /* ═══════════════════════════════════════════════════════════
-   INIT
+   THEME TOGGLE
 ═══════════════════════════════════════════════════════════ */
+const themeToggle = $('themeToggle');
+const themeIcon   = themeToggle.querySelector('.theme-icon');
+const THEME_KEY   = 'ringSizer_theme';
+
+function applyTheme(theme, animate = false) {
+  document.documentElement.setAttribute('data-theme', theme);
+  themeIcon.textContent = theme === 'light' ? '🌙' : '☀️';
+  themeToggle.setAttribute('title', theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode');
+
+  // Update meta theme-color for mobile browser chrome
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.content = theme === 'light' ? '#faf7f0' : '#0c0a08';
+
+  if (animate) {
+    themeToggle.classList.remove('spinning');
+    void themeToggle.offsetWidth; // force reflow
+    themeToggle.classList.add('spinning');
+    setTimeout(() => themeToggle.classList.remove('spinning'), 400);
+  }
+}
+
+function loadTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  // If no preference saved, check system preference
+  if (saved) {
+    applyTheme(saved);
+  } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+    applyTheme('light');
+  } else {
+    applyTheme('dark');
+  }
+}
+
+themeToggle.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') || 'dark';
+  const next    = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next, true);
+  localStorage.setItem(THEME_KEY, next);
+});
+
+// ═══════════════════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════════════════
+loadTheme();
 loadCalibration();
 buildTable();
 renderRing(currentDiamMm);
